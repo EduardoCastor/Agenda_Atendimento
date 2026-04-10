@@ -3,7 +3,7 @@ const statusBox = document.getElementById('status');
 const selectHorarios = document.getElementById('horarios');
 const inputData = document.getElementById('data');
 
-const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
+const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 
 // Bloquear datas passadas
 const hoje = new Date().toISOString().split('T')[0];
