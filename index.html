@@ -1,22 +1,51 @@
-<form id="formAtendimento">
-  <input type="text" name="nome" placeholder="Seu nome" required>
-  <input type="email" name="email" placeholder="Seu e-mail" required>
-  <textarea name="assunto" placeholder="Descreva o atendimento" required></textarea>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-  <!-- NOVO: Data -->
-  <label>Escolha a data</label>
-  <input type="date" id="data" required>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balcão Virtual</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
 
-  <!-- NOVO: Horários -->
-  <label>Horários disponíveis</label>
-  <select id="horarios" required>
-    <option value="">Carregando horários...</option>
-  </select>
+<body>
+  <div class="bg"></div>
+  <div class="container">
+    <img src="assets/logo.webp" alt="Logo Prefeitura" class="logo">
+    <h1>Prefeitura Municipal de Cabo Frio</h1>
+    <h2>Secretaria Municipal de Educação</h2>
+    <p>Teleatendimento oficial</p>
 
-  <button type="submit">Agendar Atendimento</button>
-</form>
 
-<div id="status" class="hidden">
-  ✅ Atendimento agendado com sucesso!<br>
-  Compareça no horário selecionado.
-</div>
+  
+  <form id="formAtendimento">
+    <input type="text" name="nome" placeholder="Seu nome" required>
+    <input type="email" name="email" placeholder="Seu e-mail" required>
+    <textarea name="assunto" placeholder="Descreva o atendimento" required></textarea>
+  
+    <!-- NOVO: Data -->
+    <label>Escolha a data</label>
+    <input type="date" id="data" required>
+  
+    <!-- NOVO: Horários -->
+    <label>Horários disponíveis</label>
+    <select id="horarios" required>
+      <option value="">Carregando horários...</option>
+    </select>
+  
+    <button type="submit">Agendar Atendimento</button>
+  </form>
+  
+  <div id="status" class="hidden">
+    ✅ Atendimento agendado com sucesso!<br>
+    Compareça no horário selecionado.
+  </div>
+
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>    
