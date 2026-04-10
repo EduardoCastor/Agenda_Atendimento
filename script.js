@@ -55,12 +55,21 @@ inputData.addEventListener('change', () => {
   const diaSemana = data.getDay();
 
   // 0 = domingo | 6 = sábado
+inputData.addEventListener('change', () => {
+  const [ano, mes, dia] = inputData.value.split('-');
+  const data = new Date(ano, mes - 1, dia);
+
+  const diaSemana = data.getDay();
+
   if (diaSemana === 0 || diaSemana === 6) {
     alert("Selecione apenas dias úteis (segunda a sexta).");
     inputData.value = "";
     selectHorarios.innerHTML = `<option>Selecione uma data válida</option>`;
     return;
   }
+
+  carregarHorarios();
+});
 
   carregarHorarios();
 });
