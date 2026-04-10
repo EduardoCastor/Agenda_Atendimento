@@ -10,7 +10,7 @@ const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 // 🔹 CARREGAR HORÁRIOS
 // ============================
 async function carregarHorarios() {
-  try {
+//  try {
     const dataSelecionada = inputData.value;
 
     if (!dataSelecionada) {
@@ -37,10 +37,10 @@ async function carregarHorarios() {
       selectHorarios.appendChild(option);
     });
 
-  } catch (error) {
-    console.error(error);
-    selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
-  }
+//  } catch (error) {
+ //   console.error(error);
+ //   selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
+ // }
 }
 
 // carregar ao abrir
