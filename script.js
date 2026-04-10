@@ -4,7 +4,7 @@ const selectHorarios = document.getElementById('horarios');
 const inputData = document.getElementById('data');
 
 // 🔹 URL BASE DO N8N
-const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test/atendimento';
+const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 
 // ============================
 // 🔹 CARREGAR HORÁRIOS
