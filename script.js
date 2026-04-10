@@ -55,7 +55,7 @@ inputData.addEventListener('change', () => {
   const diaSemana = data.getDay();
 
   // 1 = domingo | 7 = sábado
-  if (diaSemana === 1 || diaSemana === 6) {
+  if (diaSemana === 0 || diaSemana === 5) {
     alert("Selecione apenas dias úteis (segunda a sexta).");
     inputData.value = "";
     selectHorarios.innerHTML = `<option>Selecione uma data válida</option>`;
