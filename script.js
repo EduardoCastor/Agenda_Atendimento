@@ -1,28 +1,73 @@
 const form = document.getElementById('formAtendimento');
 const statusBox = document.getElementById('status');
+const selectHorarios = document.getElementById('horarios');
+const inputData = document.getElementById('data');
 
+// 🔹 URL BASE DO N8N
+const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
+
+// ============================
+// 🔹 CARREGAR HORÁRIOS
+// ============================
+async function carregarHorarios() {
+  try {
+    selectHorarios.innerHTML = `<option>Carregando...</option>`;
+
+    const response = await fetch(`${BASE_URL}/disponibilidade`);
+    const data = await response.json();
+
+    selectHorarios.innerHTML = `<option value="">Selecione um horário</option>`;
+
+    data.slots.forEach(slot => {
+      const option = document.createElement('option');
+      option.value = slot.inicio;
+      option.textContent = slot.hora;
+      selectHorarios.appendChild(option);
+    });
+
+  } catch (error) {
+    console.error(error);
+    selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
+  }
+}
+
+// carregar ao abrir
+carregarHorarios();
+
+// ============================
+// 🔹 SUBMIT FORMULÁRIO
+// ============================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const dados = Object.fromEntries(new FormData(form));
 
+  const inicioSelecionado = selectHorarios.value;
+
+  if (!inicioSelecionado) {
+    alert("Selecione um horário");
+    return;
+  }
+
   try {
-    // Note que removemos o "-test" para usar a URL de produção ativa
-    const response = await fetch('https://n8n.srv1352561.hstgr.cloud/webhook/balcao-virtual', {
+    const response = await fetch(`${BASE_URL}/agendar`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
+      body: JSON.stringify({
+        ...dados,
+        inicio: inicioSelecionado
+      })
     });
 
     if (response.ok) {
-      alert("Você irá receber o link para o atendimento no e-mail indicado.");
-      form.classList.add('hidden'); // Certifique-se de ter .hidden { display: none; } no CSS
+      form.classList.add('hidden');
       statusBox.classList.remove('hidden');
     } else {
-      alert("O servidor recebeu os dados, mas retornou um erro.");
+      alert("Erro ao agendar.");
     }
+
   } catch (error) {
-    console.error("Erro na requisição:", error);
-    alert("Não foi possível conectar ao servidor. Verifique se o Workflow está ATIVO no n8n.");
+    console.error(error);
+    alert("Erro de conexão com o servidor.");
   }
 });
