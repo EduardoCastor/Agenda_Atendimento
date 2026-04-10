@@ -16,6 +16,10 @@ async function carregarHorarios() {
     const response = await fetch(`${BASE_URL}/disponibilidade`);
     const data = await response.json();
 
+    const dataSelecionada = inputData.value;
+    const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
+    
+
     selectHorarios.innerHTML = `<option value="">Selecione um horário</option>`;
 
     data.slots.forEach(slot => {
@@ -32,6 +36,28 @@ async function carregarHorarios() {
 }
 
 // carregar ao abrir
+inputData.addEventListener('change', carregarHorarios);
+
+// Bloquear datas anteriores a hoje
+const hoje = new Date().toISOString().split('T')[0];
+inputData.min = hoje;
+
+inputData.addEventListener('change', () => {
+  const data = new Date(inputData.value);
+  const diaSemana = data.getDay();
+
+  // 0 = domingo | 6 = sábado
+  if (diaSemana === 0 || diaSemana === 6) {
+    alert("Selecione apenas dias úteis (segunda a sexta).");
+    inputData.value = "";
+    selectHorarios.innerHTML = `<option>Selecione uma data válida</option>`;
+    return;
+  }
+
+  carregarHorarios();
+});
+
+
 carregarHorarios();
 
 // ============================
