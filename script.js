@@ -3,24 +3,32 @@ const statusBox = document.getElementById('status');
 const selectHorarios = document.getElementById('horarios');
 const inputData = document.getElementById('data');
 
-// 🔹 URL BASE DO N8N
-const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
+const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
+
+// Bloquear datas passadas
+const hoje = new Date().toISOString().split('T')[0];
+inputData.min = hoje;
 
 // ============================
-// 🔹 CARREGAR HORÁRIOS
+// CARREGAR HORÁRIOS
 // ============================
 async function carregarHorarios() {
-//  try {
+  try {
     const dataSelecionada = inputData.value;
 
     if (!dataSelecionada) {
-      selectHorarios.innerHTML = `<option>Selecione um horário</option>`;
+      selectHorarios.innerHTML = `<option>Selecione uma data</option>`;
       return;
     }
 
     selectHorarios.innerHTML = `<option>Carregando...</option>`;
 
     const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
+
+    if (!response.ok) {
+      throw new Error("Erro na API");
+    }
+
     const data = await response.json();
 
     selectHorarios.innerHTML = `<option value="">Selecione um horário</option>`;
@@ -37,27 +45,20 @@ async function carregarHorarios() {
       selectHorarios.appendChild(option);
     });
 
-//  } catch (error) {
- //   console.error(error);
- //   selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
- // }
+  } catch (error) {
+    console.error(error);
+    selectHorarios.innerHTML = `<option>Erro ao carregar horários</option>`;
+  }
 }
 
-// carregar ao abrir
-inputData.addEventListener('change', carregarHorarios);
-
-// Bloquear datas anteriores a hoje
-const hoje = new Date().toISOString().split('T')[0];
-inputData.min = hoje;
-
+// ============================
+// VALIDA DATA + CARREGA
+// ============================
 inputData.addEventListener('change', () => {
-  const data = new Date(inputData.value);
-  const diaSemana = data.getDay();
+  if (!inputData.value) return;
 
-  // 0 = domingo | 6 = sábado
-inputData.addEventListener('change', () => {
   const [ano, mes, dia] = inputData.value.split('-');
-  const data = new Date(ano, mes, dia);
+  const data = new Date(ano, mes - 1, dia);
 
   const diaSemana = data.getDay();
 
@@ -71,20 +72,13 @@ inputData.addEventListener('change', () => {
   carregarHorarios();
 });
 
-  carregarHorarios();
-});
-
-
-carregarHorarios();
-
 // ============================
-// 🔹 SUBMIT FORMULÁRIO
+// SUBMIT
 // ============================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const dados = Object.fromEntries(new FormData(form));
-
   const inicioSelecionado = selectHorarios.value;
 
   if (!inicioSelecionado) {
@@ -102,12 +96,12 @@ form.addEventListener('submit', async (e) => {
       })
     });
 
-    if (response.ok) {
-      form.classList.add('hidden');
-      statusBox.classList.remove('hidden');
-    } else {
-      alert("Erro ao agendar.");
+    if (!response.ok) {
+      throw new Error("Erro ao agendar");
     }
+
+    form.classList.add('hidden');
+    statusBox.classList.remove('hidden');
 
   } catch (error) {
     console.error(error);
