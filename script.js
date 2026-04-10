@@ -57,7 +57,7 @@ inputData.addEventListener('change', () => {
   // 0 = domingo | 6 = sábado
 inputData.addEventListener('change', () => {
   const [ano, mes, dia] = inputData.value.split('-');
-  const data = new Date(ano, mes - 1, dia);
+  const data = new Date(ano, mes, dia);
 
   const diaSemana = data.getDay();
 
