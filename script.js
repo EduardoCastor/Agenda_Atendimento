@@ -11,16 +11,24 @@ const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
 // ============================
 async function carregarHorarios() {
   try {
+    const dataSelecionada = inputData.value;
+
+    if (!dataSelecionada) {
+      selectHorarios.innerHTML = `<option>Selecione uma data</option>`;
+      return;
+    }
+
     selectHorarios.innerHTML = `<option>Carregando...</option>`;
 
-    const response = await fetch(`${BASE_URL}/disponibilidade`);
+    const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
     const data = await response.json();
 
-    const dataSelecionada = inputData.value;
-    const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
-    
-
     selectHorarios.innerHTML = `<option value="">Selecione um horário</option>`;
+
+    if (!data.slots || data.slots.length === 0) {
+      selectHorarios.innerHTML = `<option>Sem horários disponíveis</option>`;
+      return;
+    }
 
     data.slots.forEach(slot => {
       const option = document.createElement('option');
