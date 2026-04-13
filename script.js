@@ -4,7 +4,10 @@ const selectHorarios = document.getElementById('horarios');
 const inputData = document.getElementById('data');
 
 // 🔁 URL DE PRODUÇÃO
-const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
+const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
+
+// 🔁 URL DE TESTE
+//const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 
 // ============================
 // DATA - PRÓXIMO DIA ÚTIL
