@@ -5,16 +5,41 @@ const inputData = document.getElementById('data');
 
 const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 
+
+function getProximoDiaUtil() {
+  const hoje = new Date();
+
+  do {
+    hoje.setDate(hoje.getDate() + 1);
+  } while (hoje.getDay() === 0 || hoje.getDay() === 6); 
+  // 0 = domingo, 6 = sábado
+
+  return hoje;
+}
+
+function formatarDataISO(data) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+// Define automaticamente no campo
+const campoData = document.getElementById('data');
+const proximoDiaUtil = getProximoDiaUtil();
+campoData.value = formatarDataISO(proximoDiaUtil);
+
+
 // Bloquear datas passadas
-const hoje = new Date().toISOString().split('T')[0];
-inputData.min = hoje;
+// const hoje = new Date().toISOString().split('T')[0];
+// inputData.min = hoje;
 
 // ============================
 // CARREGAR HORÁRIOS
 // ============================
 async function carregarHorarios() {
   try {
-    const dataSelecionada = inputData.value;
+    const dataSelecionada = campoData.value;
 
     if (!dataSelecionada) {
       selectHorarios.innerHTML = `<option>Selecione uma data</option>`;
