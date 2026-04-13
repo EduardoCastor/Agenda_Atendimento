@@ -75,7 +75,8 @@ async function carregarHorarios() {
 
   } catch (error) {
     console.error("Erro ao carregar horários:", error);
-    selectHorarios.innerHTML = `<option>Erro ao carregar horários</option>`;
+    selectHorarios.innerHTML = `<option>16:00</option>`;
+    //selectHorarios.innerHTML = `<option>Erro ao carregar horários</option>`;
   }
 }
 
