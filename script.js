@@ -44,8 +44,9 @@ async function carregarHorarios() {
 
     selectHorarios.innerHTML = `<option>Carregando...</option>`;
 
-    const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
-
+    //const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
+    const response = await fetch(`https://n8n.srv1352561.hstgr.cloud/webhook-test/disponibilidade?data=2026-04-15`);
+    
     if (!response.ok) {
       throw new Error("Erro na API");
     }
