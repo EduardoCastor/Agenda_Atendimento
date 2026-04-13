@@ -22,6 +22,13 @@
   
   <form id="formAtendimento">
     <input type="text" name="nome" placeholder="Seu nome" required>
+    <input 
+        type="tel" 
+        name="celular" 
+        pattern="^\(\d{2}\)\s?\d{5}-\d{4}$" 
+        placeholder="Informe um número de celular com Whatsapp (22) 99999-9999"
+        required
+     />
     <input type="email" name="email" placeholder="Seu e-mail" required>
     <textarea name="assunto" placeholder="Descreva o atendimento" required></textarea>
   
