@@ -75,8 +75,8 @@ async function carregarHorarios() {
 
   } catch (error) {
     console.error("Erro ao carregar horários:", error);
-    selectHorarios.innerHTML = `<option>16:00</option>`;
-    //selectHorarios.innerHTML = `<option>Erro ao carregar horários</option>`;
+    //selectHorarios.innerHTML = `<option>16:00</option>`;
+    selectHorarios.innerHTML = `<option>Não foi possível carregar horários</option>`;
   }
 }
 
@@ -111,8 +111,11 @@ form.addEventListener('submit', async (e) => {
       throw new Error("Erro ao agendar");
     }
 
-    form.classList.add('hidden');
-    statusBox.classList.remove('hidden');
+    //form.classList.add('hidden');
+    //statusBox.classList.remove('hidden');
+    form.style.display = 'none';
+    statusBox.style.display = 'block';
+    statusBox.scrollIntoView({ behavior: 'smooth' });
 
   } catch (error) {
     console.error("Erro no agendamento:", error);
