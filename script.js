@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectHorarios = document.getElementById('horarios');
   const inputData = document.getElementById('data');
 
-  const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
+  const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
 
  const feriados = [
     '2026-01-01',
