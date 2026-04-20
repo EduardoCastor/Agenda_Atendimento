@@ -31,7 +31,24 @@
      />
     <input type="email" name="email" placeholder="Seu e-mail" required>
     <textarea name="assunto" placeholder="Descreva o atendimento" required></textarea>
-  
+
+    <label>Tipo de Atendimento</label>
+    <select name="tipo_atendimento" required>
+      <option value="">Selecione uma opção</option>
+      <option>APOSENTADORIA</option>
+      <option>DECLARAÇÕES</option>
+      <option>EXONERAÇÃO/DEMISSÃO/DESVINCULO</option>
+      <option>LICENÇA MÉDICA/READAPTAÇÃO</option>
+      <option>LICENÇA PRÊMIO</option>
+      <option>OUTRAS LICENÇAS E AFASTAMENTOS</option>
+      <option>PERMUTA</option>
+      <option>PROCESSO SELETIVO</option>
+      <option>REMANEJAMENTO</option>
+      <option>VALE TRANSPORTE</option>
+      <option>OUTROS</option>
+    </select>
+
+    
     <!-- NOVO: Data -->
     <label>Data do Atendimento (Próximo dia útil)</label>
     <input type="date" id="data" required>
