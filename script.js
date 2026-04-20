@@ -22,9 +22,10 @@ const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
 //  return hoje;
 //}
 
-function getProximoDiaUtil(feriados = []) {
-  
-  const feriados = [
+function getProximoDiaUtil(feriados = [], diasBloqueados = [0, 3, 6]) {
+  const hoje = new Date();
+
+const feriados = [
   '2026-01-01', // Ano Novo
   '2026-04-21', // Tiradentes
   '2026-09-07', // Independência
@@ -32,31 +33,31 @@ function getProximoDiaUtil(feriados = []) {
   ];
 
 const proximoDia = getProximoDiaUtil(feriados);
-console.log(proximoDia);
-  const hoje = new Date();
-
-  // Função auxiliar para normalizar data (zera hora)
+console.log(proximoDia);  
+  
   const normalizar = (data) => {
     const d = new Date(data);
     d.setHours(0, 0, 0, 0);
     return d.getTime();
   };
 
-  // Converte lista de feriados para timestamps normalizados
-  const feriadosNormalizados = feriados.map(f => normalizar(f));
+  const feriadosSet = new Set(feriados.map(f => normalizar(f)));
 
-  do {
+  while (true) {
     hoje.setDate(hoje.getDate() + 1);
 
-    const diaSemana = hoje.getDay();
-    const ehFimDeSemana = (diaSemana === 0 || diaSemana === 6);
-    const ehFeriado = feriadosNormalizados.includes(normalizar(hoje));
+    const diaSemana = hoje.getDay(); // 0=Dom, 1=Seg, 2=Ter, 3=Qua...
 
-  } while (ehFimDeSemana || ehFeriado);
+    const ehDiaBloqueado = diasBloqueados.includes(diaSemana);
+    const ehFeriado = feriadosSet.has(normalizar(hoje));
+
+    if (ehDiaBloqueado || ehFeriado) continue;
+
+    break;
+  }
 
   return hoje;
 }
-
 
 function formatarDataISO(data) {
   const ano = data.getFullYear();
