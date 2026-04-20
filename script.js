@@ -12,15 +12,51 @@ const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
 // ============================
 // DATA - PRÓXIMO DIA ÚTIL
 // ============================
-function getProximoDiaUtil() {
+//function getProximoDiaUtil() {
+//  const hoje = new Date();
+//
+//  do {
+//    hoje.setDate(hoje.getDate() + 1);
+//  } while (hoje.getDay() === 0 || hoje.getDay() === 6);
+//
+//  return hoje;
+//}
+
+function getProximoDiaUtil(feriados = []) {
+  
+  const feriados = [
+  '2026-01-01', // Ano Novo
+  '2026-04-21', // Tiradentes
+  '2026-09-07', // Independência
+  '2026-12-25'  // Natal
+  ];
+
+const proximoDia = getProximoDiaUtil(feriados);
+console.log(proximoDia);
   const hoje = new Date();
+
+  // Função auxiliar para normalizar data (zera hora)
+  const normalizar = (data) => {
+    const d = new Date(data);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+
+  // Converte lista de feriados para timestamps normalizados
+  const feriadosNormalizados = feriados.map(f => normalizar(f));
 
   do {
     hoje.setDate(hoje.getDate() + 1);
-  } while (hoje.getDay() === 0 || hoje.getDay() === 6);
+
+    const diaSemana = hoje.getDay();
+    const ehFimDeSemana = (diaSemana === 0 || diaSemana === 6);
+    const ehFeriado = feriadosNormalizados.includes(normalizar(hoje));
+
+  } while (ehFimDeSemana || ehFeriado);
 
   return hoje;
 }
+
 
 function formatarDataISO(data) {
   const ano = data.getFullYear();
