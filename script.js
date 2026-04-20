@@ -18,28 +18,42 @@ document.addEventListener('DOMContentLoaded', () => {
     '2026-12-25'
   ];
 
-  const diasBloqueados = [0, 3, 6]; // Domingo, Quarta, Sábado
+  const diasBloqueados = [0, 3, 6]; // Dom, Qua, Sáb
 
   // ============================
-  // FUNÇÕES DE DATA
+  // UTIL: FORMATA DATA LOCAL (SEM UTC)
+  // ============================
+  function formatarDataISO(data) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  // ============================
+  // FUNÇÃO PRINCIPAL (TZ SAFE)
   // ============================
   function getProximoDiaUtil(feriados = [], diasBloqueados = []) {
     const hoje = new Date();
 
-    const normalizar = (data) => {
-      const d = new Date(data);
-      d.setHours(0, 0, 0, 0);
-      return d.getTime();
-    };
-
-    const feriadosSet = new Set(feriados.map(f => normalizar(f)));
+    // 🔥 usar string evita qualquer problema de timezone
+    const feriadosSet = new Set(feriados);
 
     while (true) {
       hoje.setDate(hoje.getDate() + 1);
 
-      const diaSemana = hoje.getDay();
+      const diaSemana = hoje.getDay(); // local
+      const dataISO = formatarDataISO(hoje);
+
       const ehDiaBloqueado = diasBloqueados.includes(diaSemana);
-      const ehFeriado = feriadosSet.has(normalizar(hoje));
+      const ehFeriado = feriadosSet.has(dataISO);
+
+      // DEBUG opcional
+      console.log('🔍 Verificando:', dataISO, {
+        diaSemana,
+        ehDiaBloqueado,
+        ehFeriado
+      });
 
       if (ehDiaBloqueado || ehFeriado) continue;
 
@@ -47,13 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     return hoje;
-  }
-
-  function formatarDataISO(data) {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
   }
 
   // ============================
@@ -139,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
 
-      // Sucesso
       form.style.display = 'none';
       statusBox.style.display = 'block';
       statusBox.scrollIntoView({ behavior: 'smooth' });
@@ -151,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================
-  // EXECUÇÃO INICIAL
+  // INIT
   // ============================
   inicializarData();
   carregarHorarios();
