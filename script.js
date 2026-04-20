@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataSelecionada = new Date(inputData.value + 'T00:00:00');
 
     if (!isDiaUtil(dataSelecionada)) {
-      alert("Data inválida. Selecione um dia útil disponível.");
+      alert("Não há atendimento nesse dia. Selecione um dia útil disponível.");
 
       const novaData = getProximoDiaUtil(dataSelecionada);
       inputData.value = formatarDataISO(novaData);
