@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const feriados = [
     '2026-01-01',
     '2026-04-21',
+    '2026-04-23',
+    '2026-04-24',
     '2026-09-07',
     '2026-12-25'
   ];
