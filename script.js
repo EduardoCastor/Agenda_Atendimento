@@ -5,13 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectHorarios = document.getElementById('horarios');
   const inputData = document.getElementById('data');
 
-  // ============================
-  // CONFIG
-  // ============================
   const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
-  // const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook-test';
 
-  const feriados = [
+ const feriados = [
     '2026-01-01',
     '2026-04-21',
     '2026-04-23',
@@ -30,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const diasBloqueados = [0, 3, 6]; // Dom, Qua, Sáb
 
   // ============================
-  // UTIL: FORMATA DATA LOCAL (SEM UTC)
+  // UTIL
   // ============================
   function formatarDataISO(data) {
     const ano = data.getFullYear();
@@ -39,50 +35,70 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${ano}-${mes}-${dia}`;
   }
 
-  // ============================
-  // FUNÇÃO PRINCIPAL (TZ SAFE)
-  // ============================
-  function getProximoDiaUtil(feriados = [], diasBloqueados = []) {
-    const hoje = new Date();
+  function isDiaUtil(data) {
+    const diaSemana = data.getDay();
+    const dataISO = formatarDataISO(data);
 
-    // 🔥 usar string evita qualquer problema de timezone
-    const feriadosSet = new Set(feriados);
+    return !diasBloqueados.includes(diaSemana) && !feriados.includes(dataISO);
+  }
 
-    while (true) {
-      hoje.setDate(hoje.getDate() + 1);
+  function getProximoDiaUtil(dataBase = new Date()) {
+    const data = new Date(dataBase);
 
-      const diaSemana = hoje.getDay(); // local
-      const dataISO = formatarDataISO(hoje);
+    do {
+      data.setDate(data.getDate() + 1);
+    } while (!isDiaUtil(data));
 
-      const ehDiaBloqueado = diasBloqueados.includes(diaSemana);
-      const ehFeriado = feriadosSet.has(dataISO);
+    return data;
+  }
 
-      // DEBUG opcional
-      console.log('🔍 Verificando:', dataISO, {
-        diaSemana,
-        ehDiaBloqueado,
-        ehFeriado
-      });
+  function adicionarDiasUteis(dataBase, quantidade) {
+    let data = new Date(dataBase);
+    let contador = 0;
 
-      if (ehDiaBloqueado || ehFeriado) continue;
-
-      break;
+    while (contador < quantidade) {
+      data.setDate(data.getDate() + 1);
+      if (isDiaUtil(data)) contador++;
     }
 
-    return hoje;
+    return data;
   }
 
   // ============================
-  // INICIALIZA DATA
+  // CONFIGURA CALENDÁRIO
   // ============================
-  function inicializarData() {
-    const proximoDiaUtil = getProximoDiaUtil(feriados, diasBloqueados);
-    const dataFormatada = formatarDataISO(proximoDiaUtil);
+  function configurarCalendario() {
+    const hoje = new Date();
 
-    inputData.value = dataFormatada;
+    const minDate = getProximoDiaUtil(hoje);
+    const maxDate = adicionarDiasUteis(hoje, 5);
 
-    console.log('📅 Data definida:', dataFormatada);
+    inputData.min = formatarDataISO(minDate);
+    inputData.max = formatarDataISO(maxDate);
+
+    inputData.value = formatarDataISO(minDate);
+
+    console.log("📅 Intervalo permitido:", {
+      min: inputData.min,
+      max: inputData.max
+    });
   }
+
+  // ============================
+  // VALIDAÇÃO AO ALTERAR DATA
+  // ============================
+  inputData.addEventListener('change', () => {
+    const dataSelecionada = new Date(inputData.value + 'T00:00:00');
+
+    if (!isDiaUtil(dataSelecionada)) {
+      alert("Data inválida. Selecione um dia útil disponível.");
+
+      const novaData = getProximoDiaUtil(dataSelecionada);
+      inputData.value = formatarDataISO(novaData);
+    }
+
+    carregarHorarios();
+  });
 
   // ============================
   // CARREGAR HORÁRIOS
@@ -91,18 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const dataSelecionada = inputData.value;
 
-      if (!dataSelecionada) {
-        selectHorarios.innerHTML = `<option>Selecione uma data</option>`;
-        return;
-      }
+      if (!dataSelecionada) return;
 
       selectHorarios.innerHTML = `<option>Carregando...</option>`;
 
       const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
 
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
+      if (!response.ok) throw new Error();
 
       const data = await response.json();
       const slots = data.slots || data;
@@ -122,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
     } catch (error) {
-      console.error("❌ Erro ao carregar horários:", error);
-      selectHorarios.innerHTML = `<option>Erro ao carregar horários</option>`;
+      console.error("Erro horários:", error);
+      selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
     }
   }
 
@@ -151,24 +162,20 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
+      if (!response.ok) throw new Error();
 
       form.style.display = 'none';
       statusBox.style.display = 'block';
-      statusBox.scrollIntoView({ behavior: 'smooth' });
 
     } catch (error) {
-      console.error("❌ Erro no agendamento:", error);
-      alert("Erro de conexão com o servidor.");
+      alert("Erro ao agendar");
     }
   });
 
   // ============================
   // INIT
   // ============================
-  inicializarData();
+  configurarCalendario();
   carregarHorarios();
 
 });
