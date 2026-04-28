@@ -65,25 +65,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================
-  // CONFIGURA CALENDÁRIO
-  // ============================
-  function configurarCalendario() {
-    const hoje = new Date();
+// CONFIGURA CALENDÁRIO
+// ============================
+function configurarCalendario() {
+  let hoje = new Date();
 
-    const minDate = getProximoDiaUtil(hoje);
-    const maxDate = adicionarDiasUteis(hoje, 5);
-
-    inputData.min = formatarDataISO(minDate);
-    inputData.max = formatarDataISO(maxDate);
-
-    inputData.value = formatarDataISO(minDate);
-
-    console.log("📅 Intervalo permitido:", {
-      min: inputData.min,
-      max: inputData.max
-    });
+  // Se for 16h ou mais, considera o próximo dia
+  if (hoje.getHours() >= 16) {
+    hoje.setDate(hoje.getDate() + 1);
   }
 
+  // Normaliza hora para evitar problemas de timezone
+  hoje.setHours(0, 0, 0, 0);
+
+  const minDate = getProximoDiaUtil(hoje);
+  const maxDate = adicionarDiasUteis(hoje, 5);
+
+  inputData.min = formatarDataISO(minDate);
+  inputData.max = formatarDataISO(maxDate);
+
+  inputData.value = formatarDataISO(minDate);
+
+  console.log("📅 Intervalo permitido:", {
+    min: inputData.min,
+    max: inputData.max
+  });
+}
   // ============================
   // VALIDAÇÃO AO ALTERAR DATA
   // ============================
