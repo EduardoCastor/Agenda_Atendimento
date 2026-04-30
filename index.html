@@ -23,10 +23,17 @@
   
   <form id="formAtendimento">
     <input type="text" name="nome" placeholder="Seu nome" required>
-    <input 
+        <input 
         type="tel" 
         name="celular"
         placeholder="Somente números (ex: 22999999999)"
+        inputmode="numeric"
+        required
+     />
+    <input 
+        type="cpf" 
+        name="cpf"
+        placeholder="Seu CPF (Somente números - ex: 22999999999)"
         inputmode="numeric"
         required
      />
