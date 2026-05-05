@@ -143,3 +143,23 @@ button:hover {
 .hidden {
   display: none;
 }
+button:disabled {
+  background: #bfbfbf;          /* cinza fixo */
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 1;                   /* evita ficar “lavado” */
+  transform: none;              /* remove efeito de scale */
+}
+
+/* remove hover quando estiver desabilitado */
+button:disabled:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* garante que ícones dentro do botão não sejam afetados */
+button:disabled i,
+button:disabled svg {
+  opacity: 1;
+  filter: none;
+}
