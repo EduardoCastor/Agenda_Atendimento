@@ -4,10 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusBox = document.getElementById('status');
   const selectHorarios = document.getElementById('horarios');
   const inputData = document.getElementById('data');
+  const btnSubmit = form.querySelector('button[type="submit"]');
 
   const BASE_URL = 'https://n8n.srv1352561.hstgr.cloud/webhook';
 
- const feriados = [
+  const feriados = [
     '2026-01-01',
     '2026-04-21',
     '2026-04-23',
@@ -65,32 +66,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================
-// CONFIGURA CALENDÁRIO
-// ============================
-function configurarCalendario() {
-  let hoje = new Date();
+  // CONFIGURA CALENDÁRIO
+  // ============================
+  function configurarCalendario() {
+    let hoje = new Date();
 
-  // Se for 16h ou mais, considera o próximo dia
-  if (hoje.getHours() >= 16) {
-    hoje.setDate(hoje.getDate() + 1);
+    if (hoje.getHours() >= 16) {
+      hoje.setDate(hoje.getDate() + 1);
+    }
+
+    hoje.setHours(0, 0, 0, 0);
+
+    const minDate = getProximoDiaUtil(hoje);
+    const maxDate = adicionarDiasUteis(hoje, 5);
+
+    inputData.min = formatarDataISO(minDate);
+    inputData.max = formatarDataISO(maxDate);
+    inputData.value = formatarDataISO(minDate);
   }
 
-  // Normaliza hora para evitar problemas de timezone
-  hoje.setHours(0, 0, 0, 0);
-
-  const minDate = getProximoDiaUtil(hoje);
-  const maxDate = adicionarDiasUteis(hoje, 5);
-
-  inputData.min = formatarDataISO(minDate);
-  inputData.max = formatarDataISO(maxDate);
-
-  inputData.value = formatarDataISO(minDate);
-
-  console.log("📅 Intervalo permitido:", {
-    min: inputData.min,
-    max: inputData.max
-  });
-}
   // ============================
   // VALIDAÇÃO AO ALTERAR DATA
   // ============================
@@ -99,12 +93,30 @@ function configurarCalendario() {
 
     if (!isDiaUtil(dataSelecionada)) {
       alert("Não há atendimento nesse dia. Selecione um dia útil disponível.");
-
       const novaData = getProximoDiaUtil(dataSelecionada);
       inputData.value = formatarDataISO(novaData);
     }
 
     carregarHorarios();
+  });
+
+  // ============================
+  // CONTROLE DO BOTÃO
+  // ============================
+  function desabilitarBotao() {
+    btnSubmit.disabled = true;
+  }
+
+  function habilitarBotao() {
+    btnSubmit.disabled = false;
+  }
+
+  selectHorarios.addEventListener('change', () => {
+    if (selectHorarios.value) {
+      habilitarBotao();
+    } else {
+      desabilitarBotao();
+    }
   });
 
   // ============================
@@ -117,6 +129,7 @@ function configurarCalendario() {
       if (!dataSelecionada) return;
 
       selectHorarios.innerHTML = `<option>Carregando...</option>`;
+      desabilitarBotao();
 
       const response = await fetch(`${BASE_URL}/disponibilidade?data=${dataSelecionada}`);
 
@@ -125,12 +138,14 @@ function configurarCalendario() {
       const data = await response.json();
       const slots = data.slots || data;
 
-      selectHorarios.innerHTML = `<option value="">Selecione o horário</option>`;
-
       if (!slots || slots.length === 0) {
-        selectHorarios.innerHTML = `<option>Sem horários disponíveis</option>`;
+        selectHorarios.innerHTML = `<option value="">Sem horários disponíveis</option>`;
+        desabilitarBotao();
         return;
       }
+
+      selectHorarios.innerHTML = `<option value="">Selecione o horário</option>`;
+      desabilitarBotao();
 
       slots.forEach(slot => {
         const option = document.createElement('option');
@@ -141,7 +156,8 @@ function configurarCalendario() {
 
     } catch (error) {
       console.error("Erro horários:", error);
-      selectHorarios.innerHTML = `<option>Erro ao carregar</option>`;
+      selectHorarios.innerHTML = `<option value="">Erro ao carregar</option>`;
+      desabilitarBotao();
     }
   }
 
@@ -184,5 +200,6 @@ function configurarCalendario() {
   // ============================
   configurarCalendario();
   carregarHorarios();
+  desabilitarBotao(); // garante estado inicial correto
 
 });
