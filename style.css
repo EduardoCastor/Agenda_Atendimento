@@ -28,6 +28,8 @@
     --radius-field: 10px;
     --shadow-card: 0 8px 40px rgba(0, 0, 0, .10);
     --transition: .24s cubic-bezier(.4, 0, .2, 1);
+
+    --header-h: 96px;
 }
 
 body {
@@ -38,6 +40,7 @@ body {
     background: #f0f4f8;
     position: relative;
     overflow-x: hidden;
+    padding-top: calc(var(--header-h) + 5px);
 }
 
 body::before {
@@ -65,10 +68,6 @@ header {
     background-image: url('assets/bg-header.png');
     background-size: cover;
     background-position: 15% 32%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 80px;
     box-shadow: 0 2px 24px rgba(0, 0, 0, .13);
 }
 
@@ -82,32 +81,63 @@ header::after {
     background: var(--city-gradient);
 }
 
-.header-logo img {
-    height: 80px;
+.header-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 40px;
+}
+
+.header-inner .logo {
+    height: 56px;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .10));
+    flex-shrink: 0;
 }
 
-.header-title {
+.header-center {
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+}
+
+.header-center p {
+    font-size: clamp(12px, 1.4vw, 16px);
+    font-weight: 700;
+    color: var(--blue1);
+    letter-spacing: .3px;
+    line-height: 1.2;
+}
+
+.header-text {
     text-align: right;
+    flex-shrink: 0;
 }
 
-.header-title h1 {
-    font-size: clamp(18px, 2.2vw, 30px);
+.header-text h1 {
+    font-size: clamp(16px, 2vw, 24px);
     font-weight: 700;
     color: var(--text-dark);
     letter-spacing: -.3px;
     line-height: 1.2;
 }
 
-.header-title p {
-    font-size: clamp(11px, 1vw, 13px);
+.header-text p {
+    font-size: clamp(10px, .9vw, 12px);
     font-weight: 500;
     color: var(--blue1);
-    letter-spacing: 1.8px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    margin-top: 3px;
+    margin-top: 2px;
+}
+
+/* a faixa gerada por header::after já cobre o rodapé do header,
+   então este elemento fica reservado apenas para eventuais estilos futuros */
+.header-stripe {
+    display: none;
 }
 
 /* ── MAIN ── */
@@ -571,21 +601,26 @@ button[type="submit"]#btnCancelar:active {
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════ */
-@media (min-width: 900px) {
-    .header-text {
-        margin-left: 790px;
-    }
-}
-
 @media (max-width: 700px) {
-    .header-text {
-        margin-left: 60px;
-        margin-top: 8px;
-        margin-bottom: 8px;
+    :root {
+        --header-h: 74px;
+    }
+
+    .header-inner {
+        padding: 0 14px;
+        gap: 8px;
+    }
+
+    .header-inner .logo {
+        height: 38px;
+    }
+
+    .header-center {
+        display: none;
     }
 
     .header-text h1 {
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .header-text p {
